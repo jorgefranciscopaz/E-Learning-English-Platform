@@ -23,7 +23,7 @@ export const register = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      'your_super_secret_jwt_key_change_in_production',
+      process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production',
       { expiresIn: '24h' }
     );
 
@@ -61,7 +61,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      'your_super_secret_jwt_key_change_in_production',
+      process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production',
       { expiresIn: '24h' }
     );
 
