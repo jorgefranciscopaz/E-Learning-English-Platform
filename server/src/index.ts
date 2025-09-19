@@ -4,8 +4,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
-import { sequelize } from './database';
+import { sequelize } from './database/database';
+import { seedDatabase } from './database/seed';
 import routes from './routes';
+import { specs, swaggerUi } from './config/swagger';
 
 dotenv.config();
 
@@ -27,11 +29,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', routes);
 
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'E-Learning API Documentation'
+}));
+
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to E-Learning English Platform API',
     version: '1.0.0',
-    docs: '/api/health',
+    docs: '/api-docs',
+    health: '/api/health',
   });
 });
 
@@ -42,6 +52,9 @@ const startServer = async () => {
 
     await sequelize.sync({ force: false });
     console.log('Database synchronized successfully.');
+
+    await seedDatabase();
+    console.log('Database seeding completed.');
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { Usuario } from '../database';
+import { Usuario } from '../database/database';
 
 interface JWTPayload {
   userId: string;
@@ -23,7 +23,7 @@ export const authenticateToken = async (req: AuthRequest, res: Response, next: N
   try {
     const decoded = jwt.verify(token, 'your_super_secret_jwt_key_change_in_production') as JWTPayload;
     const user = await Usuario.findByPk(decoded.userId);
-    
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid token' });
     }
@@ -41,7 +41,7 @@ export const requireRole = (roles: string[]) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(req.user.rol)) {
       return res.status(403).json({ error: 'Insufficient permissions' });
     }
 

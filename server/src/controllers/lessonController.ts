@@ -1,18 +1,21 @@
 import { Request, Response } from 'express';
-import { Lesson, Progress, Quiz } from '../database';
+import { Leccion, Progreso, Modulo } from '../database/database';
 
 export const getAllLessons = async (req: Request, res: Response) => {
   try {
-    const { level, category } = req.query;
-    const where: any = { isActive: true };
-    
-    if (level) where.level = level;
-    if (category) where.category = category;
+    const { modulo_id } = req.query;
+    const where: any = {};
 
-    const lessons = await Lesson.findAll({
+    if (modulo_id) where.modulo_id = modulo_id;
+
+    const lessons = await Leccion.findAll({
       where,
-      include: [{ model: Quiz }],
-      order: [['createdAt', 'ASC']],
+      include: [{ 
+        model: Modulo, 
+        as: 'Modulo',
+        attributes: ['id', 'slug', 'titulo']
+      }],
+      order: [['orden', 'ASC']],
     });
 
     res.json({ lessons });
@@ -24,8 +27,12 @@ export const getAllLessons = async (req: Request, res: Response) => {
 export const getLessonById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const lesson = await Lesson.findByPk(id, {
-      include: [{ model: Quiz }],
+    const lesson = await Leccion.findByPk(id, {
+      include: [{ 
+        model: Modulo, 
+        as: 'Modulo',
+        attributes: ['id', 'slug', 'titulo']
+      }],
     });
 
     if (!lesson) {
@@ -40,15 +47,13 @@ export const getLessonById = async (req: Request, res: Response) => {
 
 export const createLesson = async (req: Request, res: Response) => {
   try {
-    const { title, description, content, level, category, duration } = req.body;
-    
-    const lesson = await Lesson.create({
-      title,
-      description,
-      content,
-      level,
-      category,
-      duration,
+    const { modulo_id, titulo, orden, contenido_json } = req.body;
+
+    const lesson = await Leccion.create({
+      modulo_id,
+      titulo,
+      orden,
+      contenido_json,
     });
 
     res.status(201).json({ message: 'Lesson created successfully', lesson });
@@ -62,7 +67,7 @@ export const updateLesson = async (req: Request, res: Response) => {
     const { id } = req.params;
     const updates = req.body;
 
-    const [updatedRows] = await Lesson.update(updates, {
+    const [updatedRows] = await Leccion.update(updates, {
       where: { id },
     });
 
@@ -70,7 +75,7 @@ export const updateLesson = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Lesson not found' });
     }
 
-    const lesson = await Lesson.findByPk(id);
+    const lesson = await Leccion.findByPk(id);
     res.json({ message: 'Lesson updated successfully', lesson });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
@@ -80,8 +85,8 @@ export const updateLesson = async (req: Request, res: Response) => {
 export const deleteLesson = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    
-    const deleted = await Lesson.destroy({
+
+    const deleted = await Leccion.destroy({
       where: { id },
     });
 
