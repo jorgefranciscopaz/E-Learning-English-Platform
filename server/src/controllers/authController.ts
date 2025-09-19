@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { Usuario } from '../database/database';
 
 export const register = async (req: Request, res: Response) => {
@@ -54,13 +55,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = await bcrypt.compare(password, (user as any).password_hash);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      { userId: user.id, email: (user as any).email, role: (user as any).rol },
       process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production',
       { expiresIn: '24h' }
     );
@@ -70,15 +71,14 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: {
         id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        age: user.age,
-        level: user.level,
+        email: (user as any).email,
+        firstName: (user as any).nombre,
+        lastName: (user as any).apellido,
+        role: (user as any).rol,
       },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -90,11 +90,9 @@ export const getProfile = async (req: any, res: Response) => {
       user: {
         id: user.id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        age: user.age,
-        level: user.level,
+        firstName: user.nombre,
+        lastName: user.apellido,
+        role: user.rol,
       },
     });
   } catch (error) {

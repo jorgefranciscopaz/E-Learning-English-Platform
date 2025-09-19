@@ -21,7 +21,7 @@ export const authenticateToken = async (req: AuthRequest, res: Response, next: N
   }
 
   try {
-    const decoded = jwt.verify(token, 'your_super_secret_jwt_key_change_in_production') as JWTPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as JWTPayload;
     const user = await Usuario.findByPk(decoded.userId);
 
     if (!user) {

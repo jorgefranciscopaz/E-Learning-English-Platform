@@ -1,1 +1,107 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 210 40% 98%;
+    --foreground: 220 25% 15%;
+    
+    /* Vibrant learning colors */
+    --primary: 217 91% 60%;        /* Bright blue */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 217 91% 75%;
+    
+    --secondary: 142 76% 36%;      /* Fresh green */
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 142 50% 60%;
+    
+    --accent: 45 93% 58%;          /* Sunny yellow */
+    --accent-foreground: 220 25% 15%;
+    --accent-light: 45 100% 75%;
+    
+    --orange: 25 95% 58%;          /* Playful orange */
+    --orange-foreground: 0 0% 100%;
+    --orange-light: 25 100% 75%;
+    
+    --purple: 260 60% 65%;         /* Fun purple */
+    --purple-foreground: 0 0% 100%;
+    --purple-light: 260 50% 80%;
+    
+    /* Game elements */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 93% 58%;
+    --warning-foreground: 220 25% 15%;
+    --locked: 210 15% 65%;
+    --locked-foreground: 0 0% 100%;
+    
+    /* UI elements */
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 15%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Learning gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
+    --gradient-orange: linear-gradient(135deg, hsl(var(--orange)), hsl(var(--orange-light)));
+    --gradient-purple: linear-gradient(135deg, hsl(var(--purple)), hsl(var(--purple-light)));
+    
+    /* Radius */
+    --radius: 1rem;
+    --radius-large: 1.5rem;
+  }
+  
+  .dark {
+    --background: 220 25% 8%;
+    --foreground: 210 40% 98%;
+    --card: 220 25% 10%;
+    --card-foreground: 210 40% 98%;
+    --muted: 220 25% 15%;
+    --muted-foreground: 215 20% 65%;
+    --border: 220 25% 20%;
+    --input: 220 25% 20%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* Custom learning styles */
+  .module-card {
+    @apply rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105;
+  }
+  
+  .progress-bar {
+    @apply bg-muted rounded-full overflow-hidden h-3;
+  }
+  
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+  }
+  
+  .game-button {
+    @apply rounded-2xl font-bold text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105;
+  }
+  
+  .locked-overlay {
+    @apply absolute inset-0 bg-black/20 rounded-3xl flex items-center justify-center;
+  }
+}
